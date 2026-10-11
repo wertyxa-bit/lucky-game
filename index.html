@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Удача PRO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:#121212;color:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden}
+.hdr{position:sticky;top:0;width:100%;background:#1a1a24;padding:15px;text-align:center;z-index:10;border-bottom:1px solid #333}
+.bal{font-size:2em;color:#f1c40f;font-weight:bold}.cur{font-size:.5em;color:#aaa}
+
+/* СТИЛИ ДЛЯ КНОПОК БОНУСОВ */
+.bonus-btn,.daily-btn{
+    border:none;padding:8px 15px;border-radius:20px;
+    font-weight:bold;font-size:0.9em;cursor:pointer;margin-top:10px;
+    transition:0.2s;display:inline-block;
+}
+.bonus-btn{
+    background:linear-gradient(to right,#ff9f43,#e67e22);color:black;
+    box-shadow:0 0 10px rgba(255,159,67,0.4);animation:pulseOrange 2s infinite;
+}
+.daily-btn{
+    background:linear-gradient(to right,#2ecc71,#27ae60);color:white;
+    box-shadow:0 0 10px rgba(46,204,113,0.4);animation:pulseGreen 2s infinite;
+}
+@keyframes pulseOrange { 0% { transform scale(1); } 50% { transform scale(1.05); } 100% { transform scale(1); } }
+@keyframes pulseGreen { 0% { transform scale(1); } 50% { transform scale(1.05); } 100% { transform scale(1); } }
+.taken{
+    background:#333!important;color:#666!important;cursor:not-allowed!important;box-shadow:none!important;animation:none!important;opacity:0.5;
+}
+
+.box{width:95%;max-width:400px;background:#1e1e24;border-radius:15px;padding:20px;margin-top:10px;text-align:center}
+.lbl{font-size:.8em;color:#888;text-transform:uppercase;margin-bottom:5px}
+input[type=number]{width:100%;padding:12px;border-radius:8px;border:2px solid #444;background:#111;color:#fff;font-size:1.3em;text-align:center;font-weight:bold;outline:none}
+.qb{display:flex;gap:5px;justify-content:center;margin:10px 0}
+.qb button{background:#2a2a2a;border:1px solid #444;color:#ccc;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:bold}
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:15px 0}
+.mb{background:#252525;border:1px solid #444;color:#fff;padding:8px;border-radius:8px;font-weight:bold;font-size:1em;cursor:pointer;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.mb span{font-size:.6em;margin-top:2px}.mb.act{border-color:#f1c40f;background:rgba(241,196,15,.1)}
+.cl{color:#2ecc71}.cm{color:#f39c12}.ch{color:#e74c3c}
+.ci{margin:10px 0;font-weight:bold}.cv{font-size:1.2em}
+.ra{height:100px;background:#000;border-radius:10px;margin:10px 0;border:2px solid #333;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.sl{position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(90deg,transparent,transparent 10px,rgba(255,255,255,.05) 10px,rgba(255,255,255,.05) 20px);animation:sf .1s linear infinite;opacity:0}
+.sp .sl{opacity:1}@keyframes sf{from{transform:translateX(0)}to{transform:translateX(-20px)}}
+.ic{font-size:3em;z-index:5;transition:transform .4s cubic-bezier(.175,.885,.32,1.275);transform:scale(0)}.sr .ic{transform:scale(1)}
+.pb{width:100%;padding:15px;background:linear-gradient(to right,#2ecc71,#27ae60);color:#fff;border:none;border-radius:10px;font-size:1.2em;font-weight:bold;cursor:pointer;text-transform:uppercase;margin-top:10px}
+.pb:disabled{background:#444;color:#888;cursor:not-allowed}
+.sm{margin-top:10px;font-weight:bold;min-height:20px;opacity:0;transition:opacity .3s}.sm.v{opacity:1}.mw{color:#2ecc71}.ml{color:#e74c3c}
+.ws{margin-top:20px;padding-top:15px;border-top:1px dashed #444}
+.wt{font-size:.9em;color:#f1c40f;margin-bottom:5px;text-transform:uppercase;font-weight:bold}
+.wp-desc{font-size:0.7em;color:#888;margin-bottom:10px;} 
+.ww{position:relative;width:180px;height:180px;margin:0 auto 10px}
+.wc{width:100%;height:100%;border-radius:50%;background:conic-gradient(#e74c3c 0deg 45deg,#f1c40f 45deg 90deg,#2ecc71 90deg 135deg,#3498db 135deg 180deg,#9b59b6 180deg 225deg,#e67e22 225deg 270deg,#1abc9c 270deg 315deg,#d35400 315deg 360deg);border:4px solid #fff;transition:transform 4s cubic-bezier(.17,.67,.12,.99)}
+.wp{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:20px solid #fff;z-index:10}
+.sb{background:linear-gradient(to right,#9b59b6,#8e44ad);color:#fff;border:none;padding:10px 25px;border-radius:20px;font-weight:bold;cursor:pointer;text-transform:uppercase}
+.sb:disabled{filter:grayscale(1);opacity:.5;cursor:not-allowed}
+.st{margin-top:8px;font-size:.8em;color:#888}.tl{color:#2ecc71;font-weight:bold}.tt{color:#e74c3c;font-weight:bold}
+
+/* === БЛОК: КОСТИ === */
+.dice-section { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
+.dice-title { font-size: .9em; color: #ff9f43; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
+.dice-rule { font-size: 0.75em; color: #aaa; margin-bottom: 10px; } 
+.dice-area { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 15px; }
+.die { width: 60px; height: 60px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2.5em; font-weight: bold; color: black; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
+.die.shake { animation: shakeAnim 0.5s ease-in-out; }
+@keyframes shakeAnim { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
+.roll-btn { background: linear-gradient(to right, #ff9f43, #e67e22); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255, 159, 67, 0.3); }
+.roll-btn:disabled { filter: grayscale(1); opacity: 0.5; cursor: not-allowed; }
+.dice-status { margin-top: 10px; font-size: 0.8em; color: #888; }
+
+/* === НОВЫЙ БЛОК: ПРОМОКОДЫ === */
+.promo-section { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
+.promo-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
+.promo-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #111; color: #fff; font-size: 1em; outline: none; text-transform: uppercase; }
+.promo-btn { background: linear-gradient(to right, #3498db, #2980b9); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+.promo-msg { font-size: 0.8em; min-height: 20px; margin-top: 5px; }
+.pm-ok { color: #2ecc71; } .pm-err { color: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="hdr">
+    <div class="lbl">Баланс</div>
+    <div class="bal"><span id="b">20000</span><span class="cur">G</span></div>
+    
+    <!-- ПРИВЕТСТВЕННЫЙ БОНУС -->
+    <button class="bonus-btn" id="bbtn" onclick="claimBonus()">🎁 ПРИВЕТСТВИЕ +400G</button>
+    <br>
+    <!-- ЕЖЕДНЕВНЫЙ БОНУС -->
+    <button class="daily-btn" id="dbtn" onclick="claimDaily()">📅 ЕЖЕДНЕВНЫЙ БОНУС +150G</button>
+</div>
+<div class="box">
+<h2 style="margin-bottom:15px;color:#fff">ИСПЫТАЙ УДАЧУ</h2>
+<div class="lbl">Ставка (Gold)</div>
+<input type="number" id="bi" value="100" min="50">
+<div style="font-size:0.7em; color:#666; margin-bottom:5px;">Мин. ставка: 50 G</div>
+<div class="qb"><button onclick="sb(10)">+10</button><button onclick="sb(50)">+50</button><button onclick="sb(100)">+100</button><button onclick="mx()">MAX</button></div>
+<div class="lbl">Выбери риск:</div>
+<div class="mg" id="mg"></div>
+<div class="ci">Шанс: <span class="cv" id="cd">46%</span></div>
+<div class="ra" id="ra"><div class="sl"></div><div class="ic" id="ri">🪙</div></div>
+<button class="pb" id="pbtn" onclick="sg()">ИСПЫТАТЬ УДАЧУ</button>
+<div class="sm" id="sms"></div>
+
+<!-- === КОЛЕСО ФОРТУНЫ === -->
+<div class="ws">
+<div class="wt">🎡 Колесо Фортуны</div>
+<div class="wp-desc">Можно выиграть от 5 до 1000 G</div> 
+<div class="ww"><div class="wp"></div><div class="wc" id="we"></div></div>
+<button class="sb" id="wbtn" onclick="sw()">КРУТИТЬ</button>
+<div class="st" id="wst">Попытки: <span class="tl">2/2</span></div>
+</div>
+
+<!-- === БЛОК: КОСТИ === -->
+<div class="dice-section">
+    <div class="dice-title">🎲 Брось Кубик (Раз в 15 мин)</div>
+    <div class="dice-rule">Правило: Если выпадет <b>6</b>, получаешь <b>+100 G</b>. Иначе — пусто.</div>
+    <div class="dice-area">
+        <div class="die" id="die-el">?</div>
+    </div>
+    <button class="roll-btn" id="rbtn" onclick="rollDice()">БРОСИТЬ</button>
+    <div class="dice-status" id="dst">Кулдаун: <span class="tl">Готово!</span></div>
+</div>
+
+<!-- === НОВЫЙ БЛОК: ПРОМОКОДЫ === -->
+<div class="promo-section">
+    <div class="dice-title" style="color:#3498db;">💎 Промокоды</div>
+    <div class="promo-input-group">
+        <input type="text" id="pc-in" placeholder="ВВЕДИ КОД..." class="promo-input">
+        <button class="promo-btn" onclick="checkPromo()">OK</button>
+    </div>
+    <div class="promo-msg" id="pc-msg"></div>
+</div>
+
+</div>
+<script>
+// ЛОГИКА ОБНОВЛЕНА
+var B=parseInt(localStorage.getItem('bg'))||20000,M=[{v:2,c:.46,r:'l'},{v:3,c:.3,r:'l'},{v:5,c:.18,r:'m'},{v:10,c:.09,r:'m'},{v:25,c:.03,r:'h'},{v:50,c:.01,r:'h'}],CM=M[0],WP=[5,10,25,50,100,250,500,1000],SPD=2,DMS=86400000,W={u:0,t:Date.now()},WS=false,BONUS_TAKEN=localStorage.getItem('bt_taken')==='true',E={b:document.getElementById('b'),bi:document.getElementById('bi'),ra:document.getElementById('ra'),ri:document.getElementById('ri'),p:document.getElementById('pbtn'),s:document.getElementById('sms'),mg:document.getElementById('mg'),cd:document.getElementById('cd'),we:document.getElementById('we'),wb:document.getElementById('wbtn'),ws:document.getElementById('wst'),bb:document.getElementById('bbtn'),db:document.getElementById('dbtn'),de:document.getElementById('die-el'),rb:document.getElementById('rbtn'),ds:document.getElementById('dst'),pi:document.getElementById('pc-in'),pm:document.getElementById('pc-msg')};
+
+let lastRollTime = parseInt(localStorage.getItem('last_roll')) || 0;
+const ROLL_CD = 15 * 60 * 1000; // 15 минут
+
+// Список промокодов (можешь менять здесь!)
+const PROMOS = {
+    'HELLO': 500,
+    'LUCKY': 1000,
+    'PRO': 2000,
+    'FRIEND': 300
+};
+let usedPromos = JSON.parse(localStorage.getItem('used_promos')) || [];
+
+function I(){U();RM();SM(M[0]);CW();UW();CB();CD();RD()}
+function S(){localStorage.setItem('bg',B);localStorage.setItem('wg',JSON.stringify(W))}
+function U(){E.b.innerText=B.toLocaleString()}
+function RM(){E.mg.innerHTML='';M.forEach(function(m,i){var b=document.createElement('button');b.className='mb';b.id='m'+i;b.innerHTML='x'+m.v+'<span class="'+(m.r=='h'?'ch':m.r=='m'?'cm':'cl')+'">'+(m.c*100).toFixed(2)+'%</span>';b.onclick=function(){SM(m)};E.mg.appendChild(b)})}
+function SM(m){CM=m;document.querySelectorAll('.mb').forEach(function(x){x.classList.remove('act')});var i=M.findIndex(function(x){return x.v==m.v});if(i>=0)document.getElementById('m'+i).classList.add('act');E.cd.innerText=(m.c*100).toFixed(2)+'%';E.cd.style.color=m.r=='h'?'#e74c3c':m.r=='m'?'#f39c12':'#2ecc71'}
+function sb(a){var v=parseInt(E.bi.value)||0,n=v+a;if(n>B)n=B;if(n<50)n=50;E.bi.value=n}
+function mx(){E.bi.value=B}
+function sg(){var a=parseInt(E.bi.value);if(!a||a<50){MSG("Мин. ставка 50 G!","l");return}if(a>B){MSG("Мало Gold!","l");return}E.p.disabled=true;E.s.classList.remove('v');E.ri.style.transform='scale(0)';E.ra.classList.add('sp');B-=a;U();S();setTimeout(function(){FR(a)},1500)}
+function FR(a){E.ra.classList.remove('sp');var w=Math.random()<CM.c;if(w){var win=a*CM.v;B+=win;E.ri.innerText="💰";E.ri.style.color="#2ecc71";MSG("УСПЕХ! +"+win.toLocaleString()+" G","w")}else{E.ri.innerText="💀";E.ri.style.color="#e74c3c";MSG("ПРОВАЛ. -"+a+" G","l")}E.ri.style.transform='scale(1)';E.ra.classList.add('sr');U();S();setTimeout(function(){E.p.disabled=false;E.ra.classList.remove('sr');E.ri.style.transform='scale(0)'},2000)}
+function MSG(t,y){E.s.innerText=t;E.s.className='sm v '+(y=='w'?'mw':'ml')}
+function CW(){if(Date.now()-W.t>=DMS){W.u=0;W.t=Date.now();S()}}
+function UW(){var r=SPD-W.u;if(r>0){E.wb.disabled=false;E.ws.innerHTML='Попытки: <span class="tl">'+r+'/'+SPD+'</span>'}else{E.wb.disabled=true;var tl=DMS-(Date.now()-W.t),h=Math.floor(tl/3600000),mn=Math.floor((tl%3600000)/60000);E.ws.innerHTML='<span class="tt">Жди: '+h+'ч '+mn+'м</span>'}}
+function sw(){if(WS||W.u>=SPD)return;WS=true;E.wb.disabled=true;var pi=Math.floor(Math.random()*WP.length),pv=WP[pi],sc=WP.length,sa=360/sc,tr=5*360+(sc-pi)*sa;E.we.style.transform='rotate('+tr+'deg)';setTimeout(function(){WS=false;W.u++;S();B+=pv;U();S();alert("🎉 Выигрыш: "+pv+" G!");UW();E.we.style.transition='none';E.we.style.transform='rotate('+(tr%360)+'deg)';void E.we.offsetWidth;E.we.style.transition='transform 4s cubic-bezier(.17,.67,.12,.99)'},4000)}
+
+// ФУНКЦИИ РАЗОВОГО БОНУСА
+function CB(){ 
+    if(BONUS_TAKEN) {
+        E.bb.className = "bonus-btn taken";
+        E.bb.innerText = "✅ ПРИВЕТСТВИЕ ЗАБРАНО";
+        E.bb.disabled = true;
+    } else {
+        E.bb.className = "bonus-btn";
+        E.bb.innerText = "🎁 ПРИВЕТСТВИЕ +400G";
+        E.bb.disabled = false;
+    }
+}
+function claimBonus(){
+    if(!BONUS_TAKEN) {
+        B += 400;
+        BONUS_TAKEN = true;
+        localStorage.setItem('bt_taken', 'true');
+        U(); alert("✅ Приветственный бонус получен! +400 G"); CB();
+    }
+}
+
+// === НОВАЯ ЛОГИКА: ЕЖЕДНЕВНАЯ НАГРАДА ===
+let dailyTaken = localStorage.getItem('daily_taken_date') === new Date().toDateString();
+function CD() {
+    if(dailyTaken) {
+        E.db.className = "daily-btn taken";
+        E.db.innerText = "⏳ ЖДИ ЗАВТРА";
+        E.db.disabled = true;
+    } else {
+        E.db.className = "daily-btn";
+        E.db.innerText = "📅 ЕЖЕДНЕВНЫЙ БОНУС +150G";
+        E.db.disabled = false;
+    }
+}
+function claimDaily() {
+    if(!dailyTaken) {
+        B += 150;
+        dailyTaken = true;
+        localStorage.setItem('daily_taken_date', new Date().toDateString());
+        U(); alert("✅ Ежедневная награда получена! +150 G"); CD();
+    }
+}
+
+// === НОВАЯ ЛОГИКА: КОСТИ ===
+function RD() {
+    var now = Date.now();
+    var timeLeft = ROLL_CD - (now - lastRollTime);
+    
+    if(timeLeft <= 0) {
+        E.rb.disabled = false;
+        E.ds.innerHTML = '<span class="tl">Готово к броску!</span>';
+    } else {
+        E.rb.disabled = true;
+        var m = Math.ceil(timeLeft / 60000);
+        E.ds.innerHTML = '<span class="tt">Кулдаун: ' + m + ' мин</span>';
+    }
+}
+
+function rollDice() {
+    if(E.rb.disabled) return;
+    
+    // Анимация тряски
+    E.de.classList.add('shake');
+    setTimeout(() => {
+        E.de.classList.remove('shake');
+        
+        // Генерация числа 1-6
+        var result = Math.floor(Math.random() * 6) + 1;
+        E.de.innerText = result;
+        
+        // Обновление времени кулдауна
+        lastRollTime = Date.now();
+        localStorage.setItem('last_roll', lastRollTime);
+        
+        // Проверка выигрыша
+        if(result === 6) {
+            B += 100;
+            U();
+            alert("🎲 ШЕСТЁРКА! Ты получил +100 G!");
+        } else {
+            alert("🎲 Выпало: " + result + ". Попробуй позже.");
+        }
+        
+        RD(); // Обновить статус кнопки
+    }, 500); // Длительность анимации
+}
+
+// === СИСТЕМА ПРОМОКОДОВ ===
+function checkPromo() {
+    let code = E.pi.value.trim().toUpperCase();
+    if(!code) return;
+
+    if(usedPromos.includes(code)) {
+        showPMMsg("Этот код уже использован!", "err");
+        return;
+    }
+
+    if(PROMOS[code]) {
+        let reward = PROMOS[code];
+        B += reward;
+        usedPromos.push(code);
+        localStorage.setItem('used_promos', JSON.stringify(usedPromos));
+        U();
+        showPMMsg(`Успех! Получено ${reward} G`, "ok");
+        E.pi.value = ""; // Очистить поле
+    } else {
+        showPMMsg("Неверный промокод", "err");
+    }
+}
+
+function showPMMsg(text, type) {
+    E.pm.innerText = text;
+    E.pm.className = 'promo-msg ' + (type == 'ok' ? 'pm-ok' : 'pm-err');
+}
+
+// Таймер обновления кулдаунов каждую минуту
+setInterval(() => {
+    RD();
+    CD(); // На случай если сменился день
+}, 60000);
+
+I();
+</script>
+</body>
+</html>
